@@ -23,7 +23,7 @@ def allowed_file(filename):
 def getPhotoInput():
     # BE에서 json객체 전달받기
     request_obj = request.get_json()
-    print('check',request_obj)
+    print('request_obj',request_obj)
     response_obj = {
         # 'categories':'',
         # 'nukki_image':'',
@@ -32,13 +32,15 @@ def getPhotoInput():
     }
     if request_obj['path']!='':
         # 이미지 열기
+        # path_img = Image.open(request.get(response_obj['path'],stream=True).raw).convert("RGB")
         # img = Image.open(request.get(response_obj['path'],stream=True).raw).convert("RGB")
+        # print('img',img)
         # response_obj['nukki_image']=img
         response_obj['success']='1'
         response_obj['message']='success'
         # 이미지 Base64로 인코딩()
         # with open()
-        print('check',jsonify(response_obj))
+        print('response_obj',jsonify(response_obj))
         return jsonify(response_obj)
     
     # if 'file' not in request.files:
