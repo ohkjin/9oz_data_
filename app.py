@@ -1,7 +1,10 @@
-import os
+import os, io
 from flask import Flask, request, jsonify
 from PIL import Image
 import torch
+import numpy as np
+import cv2
+import base64
 
 app = Flask(__name__)
 
@@ -23,15 +26,41 @@ def allowed_file(filename):
 def getPhotoInput():
     # BE에서 json객체 전달받기
     request_obj = request.get_json()
-    print('request_obj',request_obj)
+    # print('request_obj',request_obj)
     response_obj = {
         # 'categories':'',
         # 'nukki_image':'',
+        'similar':'',
+        'style':0,
         'success':'',
         'message':'',
     }
     if request_obj['path']!='':
+       
+        # cv2
+        # npimg = np.fromstring(file, np.uint8)
+        # byte_img = cv2.imdecode(npimg,cv2.IMREAD_COLOR)
+        # print(byte_img)
+        # img = Image.fromarray(img.astype("uint8"))
+        # rawBytes = io.BytesIO()
+        # img.save(rawBytes, "JPEG")
+        # rawBytes.seek(0)
+        # img_base64 = base64.b64encode(rawBytes.read())
+        # return jsonify({'status':str(img_base64)})
+
         # 이미지 열기
+        byte_file = request_obj['image'] ## byte file
+        # base64
+        base64_file = base64.b64decode(byte_file)
+        img = Image.open(io.BytesIO(base64_file))
+        imgRGB = Image.open(io.BytesIO(base64_file)).convert("RGB")
+        img.show()
+        
+        print("size",img.size)
+        print("mode",img.mode)
+        print("modeRGB",imgRGB.mode)
+    
+
         # path_img = Image.open(request.get(response_obj['path'],stream=True).raw).convert("RGB")
         # img = Image.open(request.get(response_obj['path'],stream=True).raw).convert("RGB")
         # print('img',img)
