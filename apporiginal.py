@@ -5,19 +5,15 @@ import torch
 import numpy as np
 import cv2
 import base64
-from transformers import SegformerImageProcessor, AutoModelForSemanticSegmentation
-import requests
-import matplotlib.pyplot as plt
-import torch.nn as nn
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000, debug=True, threaded=False)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-@app.route('/')
+# @app.route('/')
 def hello():
     return 'Hello'
 
@@ -26,7 +22,7 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/photo_to_flask', methods=['POST'])
+# @app.route('/photo_to_flask', methods=['POST'])
 def getPhotoInput():
     # BE에서 json객체 전달받기
     request_obj = request.get_json()
@@ -36,7 +32,6 @@ def getPhotoInput():
         # 'nukki_image':'',
         'similar':'',
         'style':0,
-        'season':'봄',
         'success':'',
         'message':'',
     }
@@ -60,25 +55,6 @@ def getPhotoInput():
         img = Image.open(io.BytesIO(base64_file))
         imgRGB = Image.open(io.BytesIO(base64_file)).convert("RGB")
         img.show()
-
-        # image segmentation
-        processor = SegformerImageProcessor.from_pretrained("mattmdjaga/segformer_b2_clothes")
-        model = AutoModelForSemanticSegmentation.from_pretrained("mattmdjaga/segformer_b2_clothes")
-        
-        inputs = processor(images=img, return_tensors="pt")
-
-        outputs = model(**inputs)
-        logits = outputs.logits.cpu()
-
-        upsampled_logits = nn.functional.interpolate(
-            logits,
-            size=img.size[::-1],
-            mode="bilinear",
-            align_corners=False,
-        )
-
-        pred_seg = upsampled_logits.argmax(dim=1)[0]
-        plt.imshow(pred_seg)
         
         print("size",img.size)
         print("mode",img.mode)
